@@ -82,11 +82,11 @@
 
         const lightIntensityElement = document.getElementById('lightIntensity');
         lightIntensityElement.innerText = `Light Intensity: ${data.lightIntensity}`;
-        if (data.lightIntensity >= 150) {
+        if (data.lightIntensity >= 200) {
           lightIntensityElement.classList.remove('standard');
           lightIntensityElement.classList.add('alert');
           // Show popup notice
-          alert('Light intensity is more than 100!');
+          alert('Light intensity is more than 200!');
         } else {
           lightIntensityElement.classList.remove('alert');
           lightIntensityElement.classList.add('standard');
