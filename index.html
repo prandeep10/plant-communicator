@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Plant Monitoring</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+
+  .container {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .data-info {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #555;
+  }
+
+  .icon {
+    font-size: 30px;
+    margin-right: 10px;
+    color: #666;
+  }
+
+  .standard {
+    font-weight: bold;
+    color: #4CAF50; /* Green */
+  }
+
+  .alert {
+    font-weight: bold;
+    color: #FF5722; /* Red */
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Real-Time Plant Monitoring</h1>
+  <div class="data-info">
+    <i class="fas fa-thermometer-half icon"></i>
+    <span id="temperature">Fetching temperature...</span>
+    <span class="standard">(Standard: 18-24°C)</span>
+  </div>
+  <div class="data-info">
+    <i class="fas fa-lightbulb icon"></i>
+    <span id="lightIntensity">Fetching light intensity...</span>
+    <span class="standard">(Standard: 200-400 lux)</span>
+  </div>
+</div>
+
+<script>
+  function fetchData() {
+    fetch('https://dht11project-backend.onrender.com/getData')
+      .then(response => response.json())
+      .then(data => {
+        const temperatureElement = document.getElementById('temperature');
+        temperatureElement.innerText = `Temperature: ${data.temperature} °C`;
+        if (data.temperature >= 18 && data.temperature <= 24) {
+          temperatureElement.classList.remove('alert');
+          temperatureElement.classList.add('standard');
+        } else {
+          temperatureElement.classList.remove('standard');
+          temperatureElement.classList.add('alert');
+        }
+
+        const lightIntensityElement = document.getElementById('lightIntensity');
+        lightIntensityElement.innerText = `Light Intensity: ${data.lightIntensity}`;
+        if (data.lightIntensity >= 150) {
+          lightIntensityElement.classList.remove('standard');
+          lightIntensityElement.classList.add('alert');
+          // Show popup notice
+          alert('Light intensity is more than 100!');
+        } else {
+          lightIntensityElement.classList.remove('alert');
+          lightIntensityElement.classList.add('standard');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        document.getElementById('temperature').innerText = 'Error fetching temperature';
+        document.getElementById('lightIntensity').innerText = 'Error fetching light intensity';
+      });
+  }
+
+  // Fetch data initially
+  fetchData();
+
+  // Fetch data every 5 seconds
+  setInterval(fetchData, 3000);
+</script>
+</body>
+</html>
